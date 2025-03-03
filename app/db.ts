@@ -23,16 +23,21 @@ export async function getUser(email: string) {
  * Creates a new user in the database with hashed password
  * @param email - The email address for the new user
  * @param password - The plain text password to be hashed and stored
+ * @param role - The role of the user
  * @returns Promise resolving to the result of the insert operation
  */
-export async function createUser(email: string, password: string) {
+export async function createUser(email: string, password: string, role: string = "user") {
   // Generate a salt for password hashing
   let salt = genSaltSync(10);
   // Hash the password with the generated salt
   let hash = hashSync(password, salt);
 
-  // Insert the new user with email and hashed password
-  return await db.insert(user).values({ email, password: hash });
+  // Insert the new user with email, hashed password, and role
+  return await db.insert(user).values({
+    email,
+    password: hash,
+    role
+  }).returning();
 }
 
 /**

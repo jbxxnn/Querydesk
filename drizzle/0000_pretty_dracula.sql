@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS "Chunk" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "User" (
 	"email" varchar(64) PRIMARY KEY NOT NULL,
-	"password" varchar(64)
+	"password" varchar(64),
+	"role" varchar(20) DEFAULT 'user' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "pinecone_ids" (

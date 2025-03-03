@@ -171,13 +171,13 @@ export function Chat({
             }}
           />
 
-          <div
+          {/* <div
             className="relative text-sm bg-zinc-100 rounded-lg size-9 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer hover:bg-zinc-200 dark:text-zinc-50 dark:bg-zinc-700 dark:hover:bg-zinc-800"
             onClick={() => {
               setIsFilesVisible(!isFilesVisible);
             }}
-          >
-            <FileIcon />
+          > */}
+            {/* <FileIcon />
             <motion.div
               className="absolute text-xs -top-2 -right-2 bg-blue-500 size-5 rounded-full flex flex-row justify-center items-center border-2 dark:border-zinc-900 border-white text-blue-50"
               initial={{ opacity: 0, scale: 0.5 }}
@@ -185,12 +185,12 @@ export function Chat({
               transition={{ delay: 0.5 }}
             >
               {selectedFilePathnames?.length}
-            </motion.div>
-          </div>
+            </motion.div> */}
+          {/* </div> */}
         </form>
       </div>
 
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {isFilesVisible && (
           <Files
             setIsFilesVisible={setIsFilesVisible}
@@ -198,7 +198,7 @@ export function Chat({
             setSelectedFilePathnames={setSelectedFilePathnames}
           />
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
     </div>
   );
 }

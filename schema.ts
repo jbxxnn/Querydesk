@@ -13,6 +13,7 @@ import {
 export const user = pgTable("User", {
   email: varchar("email", { length: 64 }).primaryKey().notNull(),
   password: varchar("password", { length: 64 }),
+  role: varchar("role", { length: 20 }).notNull().default("user"),
 });
 
 export const chat = pgTable("Chat", {

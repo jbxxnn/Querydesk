@@ -22,6 +22,9 @@ export async function POST(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  // Check if the user has admin role
+  const isAdmin = session.user?.role === "admin";
+
   // Initialize streaming response using the AI SDK
   const result = streamText({
     // Use the custom model defined in the AI configuration
@@ -35,6 +38,7 @@ export async function POST(request: Request) {
       2. For specific information retrieval needs, use the getInformation tool.
       
       3. IMPORTANT: When a user asks to update, change, modify, or edit any information:
+        ${isAdmin ? `
         - First use getInformation to find the exact content to update
         - BEFORE making any changes, show the user:
           * The exact content that will be updated (copy and paste the exact text)
@@ -46,6 +50,11 @@ export async function POST(request: Request) {
           * context: (Optional) Some surrounding text to ensure accurate matching
         - If the update is successful (success: true in response), inform the user
         - Do not verify again unless the user specifically asks
+        ` : `
+        - Politely inform the user that only administrators can make updates to the knowledge base
+        - Offer to show them the information they're interested in using the getInformation tool
+        - Suggest they contact an administrator if they need to make changes
+        `}
         
       4. EXAMPLES of update requests:
         - "Update the morning shift to start at 9:00 AM"
@@ -92,6 +101,16 @@ export async function POST(request: Request) {
         // Implementation of the tool functionality
         execute: async ({ searchQuery, newContent, context }) => {
           console.log('updateInformation tool called with:', { searchQuery, newContent, context });
+          
+          // Check if user has admin role before allowing updates
+          if (!isAdmin) {
+            return {
+              success: false,
+              message: 'Permission denied: Only administrators can update information',
+              error: true
+            };
+          }
+          
           try {
             // Attempt to update the resource in the knowledge base
             const result = await updateResource({ searchQuery, newContent, context });

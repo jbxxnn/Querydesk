@@ -10,6 +10,7 @@ import { FileIcon, LoadingIcon, TrashIcon, UploadIcon } from "@/components/icons
 import useSWR from "swr";
 import { fetcher } from "@/utils/functions";
 import cx from "classnames";
+import { useRouter } from "next/navigation";
 
 export default function Documents({
     id,
@@ -20,6 +21,7 @@ export default function Documents({
     initialMessages: Array<Message>;
     session: Session | null;
   }) {
+    const router = useRouter();
     const [selectedFilePathnames, setSelectedFilePathnames] = useState<
     Array<string>
   >([]);
@@ -55,7 +57,12 @@ export default function Documents({
   useEffect(() => {
     console.log("Documents component rendered");
     setIsMounted(true);
-  }, []);
+    
+    // Check if user is admin, redirect if not
+    if (session && session.user && session.user.role !== 'admin') {
+      router.replace('/');
+    }
+  }, [session, router]);
 
   useEffect(() => {
     if (session && session.user) {
@@ -68,6 +75,11 @@ export default function Documents({
       );
     }
   }, [session]);
+
+  // Add back the conditional rendering to prevent content from showing to non-admins
+  if (!session || !session.user || session.user.role !== 'admin') {
+    return <div className="flex justify-center items-center h-screen">Nothing to see here 😋</div>;
+  }
     
   return (
     <div className="flex flex-col items-center min-h-screen w-full p-4 pt-[100px]">

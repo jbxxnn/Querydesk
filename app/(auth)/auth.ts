@@ -21,4 +21,25 @@ export const {
       },
     }),
   ],
+  callbacks: {
+    // Add the role to the JWT token
+    async jwt({ token, user }) {
+      if (user) {
+        // Include the role in the token
+        token.role = user.role;
+        console.log("JWT token after processing:", token);
+      }
+      return token;
+    },
+    // Add the role to the session
+    async session({ session, token }) {
+      if (session.user && token.role) {
+        // Add the role to the session user object
+        session.user.role = token.role;
+
+        console.log("Session data after processing:", session);
+      }
+      return session;
+    },
+  },
 });
