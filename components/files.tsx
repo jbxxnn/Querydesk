@@ -4,7 +4,7 @@ import useSWR from "swr";
 import {
   CheckedSquare,
   InfoIcon,
-  LoaderIcon,
+  LoadingIcon,
   TrashIcon,
   UncheckedSquare,
   UploadIcon,
@@ -84,6 +84,7 @@ export const Files = ({
           <input
             name="file"
             ref={inputFileRef}
+            placeholder="Upload a file"
             type="file"
             required
             className="opacity-0 pointer-events-none w-1"
@@ -184,7 +185,7 @@ export const Files = ({
                 >
                   {deleteQueue.includes(file.pathname) ? (
                     <div className="animate-spin">
-                      <LoaderIcon />
+                      <LoadingIcon />
                     </div>
                   ) : selectedFilePathnames.includes(file.pathname) ? (
                     <CheckedSquare />
@@ -237,7 +238,7 @@ export const Files = ({
             >
               <div className="text-zinc-500">
                 <div className="animate-spin">
-                  <LoaderIcon />
+                  <LoadingIcon />
                 </div>
               </div>
 

@@ -9,6 +9,7 @@ import { FileIcon } from "@/components/icons";
 import { Message as PreviewMessage } from "@/components/message";
 import { useScrollToBottom } from "@/components/use-scroll-to-bottom";
 import { Session } from "next-auth";
+import { BotIcon, LoadingIcon } from "./icons";
 
 const suggestedActions = [
   {
@@ -37,6 +38,7 @@ export function Chat({
   >([]);
   const [isFilesVisible, setIsFilesVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
     if (isMounted !== false && session && session.user) {
@@ -63,23 +65,39 @@ export function Chat({
     }
   }, [session]);
 
-  const { messages, handleSubmit, input, setInput, append } = useChat({
+  const { messages, handleSubmit, input, setInput, append, isLoading } = useChat({
     body: { id, selectedFilePathnames },
     initialMessages,
     onFinish: () => {
       window.history.replaceState({}, "", `/${id}`);
     },
+    onResponse: () => {
+      setShowSpinner(false);
+    },
   });
+
+  useEffect(() => {
+    if (isLoading) {
+      const lastMessage = messages[messages.length - 1];
+      const isLastMessageFromAI = lastMessage && lastMessage.role === 'assistant';
+      
+      if (!isLastMessageFromAI) {
+        setShowSpinner(true);
+      }
+    } else {
+      setShowSpinner(false);
+    }
+  }, [isLoading, messages]);
 
   const [messagesContainerRef, messagesEndRef] =
     useScrollToBottom<HTMLDivElement>();
 
   return (
     <div className="flex flex-row justify-center pb-20 h-dvh bg-white dark:bg-zinc-900">
-      <div className="flex flex-col justify-between items-center gap-4">
+      <div className="flex flex-col justify-between items-center gap-4 w-full max-w-[1200px]">
         <div
           ref={messagesContainerRef}
-          className="flex flex-col gap-4 h-full w-dvw items-center overflow-y-scroll"
+          className="flex flex-col gap-4 h-full w-full items-center overflow-y-scroll px-4 md:px-0"
         >
           {messages.map((message, index) => (
             <PreviewMessage
@@ -88,6 +106,23 @@ export function Chat({
               content={message.content}
             />
           ))}
+          
+          {showSpinner && (
+            <div className="flex items-start gap-4 max-w-[500px] w-full">
+              <div className="size-[24px] flex flex-col justify-center items-center flex-shrink-0 text-zinc-400">
+                <BotIcon />
+              </div>
+              <div className="flex-1 space-y-2 overflow-hidden">
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <LoadingIcon />
+                </motion.div>
+              </div>
+            </div>
+          )}
+          
           <div
             ref={messagesEndRef}
             className="flex-shrink-0 min-w-[24px] min-h-[24px]"
