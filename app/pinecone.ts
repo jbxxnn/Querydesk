@@ -154,4 +154,30 @@ export async function searchPinecone({
     content: match.metadata?.content || '',
     score: match.score
   }));
+}
+
+/**
+ * Retrieves all document chunks from Pinecone without filtering by file path
+ * @param limit - Optional maximum number of chunks to retrieve (default: 1000)
+ * @returns Promise resolving to an array of chunk records
+ */
+export async function getAllChunksFromPinecone({
+  limit = 1000
+}: {
+  limit?: number
+} = {}) {
+  // Query Pinecone for all chunks without filtering
+  const results = await index.query({
+    vector: new Array(1536).fill(0), // Dummy vector for metadata-only query
+    topK: limit, // Limit the number of results
+    includeMetadata: true
+  });
+  
+  // Transform results to match your application's expected format
+  return results.matches.map(match => ({
+    id: match.id,
+    filePath: match.metadata?.filePath || '',
+    content: match.metadata?.content || '',
+    // Note: The actual embedding vector isn't typically needed after retrieval
+  }));
 } 

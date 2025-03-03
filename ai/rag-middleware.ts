@@ -1,6 +1,6 @@
 import { auth } from "@/app/(auth)/auth";
 // import { getChunksByFilePaths } from "@/app/db";
-import { getChunksByFilePathsFromPinecone } from "@/app/pinecone";
+import { getChunksByFilePathsFromPinecone, getAllChunksFromPinecone } from "@/app/pinecone";
 import { openai } from "@ai-sdk/openai";
 import {
   cosineSimilarity,
@@ -41,9 +41,6 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
     // Skip RAG if validation fails (no files selected)
     if (!success) return params; // no files selected
 
-    // Get the array of selected file paths
-    const selection = data.files.selection;
-
     // Get the most recent message from the conversation
     const recentMessage = messages.pop();
 
@@ -53,21 +50,17 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       if (recentMessage) {
         messages.push(recentMessage);
       }
-
       return params;
     }
 
     // Extract text content from the user's message
-    // Handles potential multi-part messages by joining text parts
     const lastUserMessageContent = recentMessage.content
       .filter((content) => content.type === "text")
       .map((content) => content.text)
       .join("\n");
 
     // Classify the user's message to determine if RAG is needed
-    // Uses a smaller model for efficiency
     const { object: classification } = await generateObject({
-      // Fast model for classification:
       model: openai("gpt-4o-mini", { structuredOutputs: true }),
       output: "enum",
       enum: ["question", "statement", "other"],
@@ -81,30 +74,29 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       return params;
     }
 
-    // Implement Hypothetical Document Embeddings (HDE) technique:
-    // 1. Generate a hypothetical answer to the question
+    // Generate hypothetical answer
     const { text: hypotheticalAnswer } = await generateText({
-      // Fast model for generating hypothetical answer:
       model: openai("gpt-4o-mini", { structuredOutputs: true }),
       system: "Answer the users question:",
       prompt: lastUserMessageContent,
     });
 
-    // 2. Create an embedding for the hypothetical answer
+    // Create embedding for hypothetical answer
     const { embedding: hypotheticalAnswerEmbedding } = await embed({
       model: openai.embedding("text-embedding-3-small"),
       value: hypotheticalAnswer,
     });
 
-    // Retrieve relevant document chunks from Pinecone based on selected files
-    // Prefixes file paths with user email for multi-tenant isolation
-    const chunksBySelection = await getChunksByFilePathsFromPinecone({
-      filePaths: selection.map((path) => `${session.user?.email}/${path}`),
-    });
+    // Retrieve all available document chunks from Pinecone
+    // const chunksBySelection = await getChunksByFilePathsFromPinecone({
+    //   filePaths: selection.map((path) => `${session.user?.email}/${path}`),
+    // });
+    const allChunks = await getAllChunksFromPinecone();
 
     // Generate embeddings for each retrieved chunk
     const chunksWithEmbeddings = await Promise.all(
-      chunksBySelection.map(async (chunk) => {
+      // chunksBySelection.map(async (chunk) => {
+      allChunks.map(async (chunk) => {
         const { embedding } = await embed({
           model: openai.embedding("text-embedding-3-small"),
           value: chunk.content.toString(),

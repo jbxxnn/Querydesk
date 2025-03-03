@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderIcon } from "@/components/icons";
+import { LoadingIcon } from "@/components/icons";
 import { useFormStatus } from "react-dom";
 
 export function SubmitButton({ children }: { children: React.ReactNode }) {
@@ -15,7 +15,7 @@ export function SubmitButton({ children }: { children: React.ReactNode }) {
       {children}
       {pending && (
         <span className="animate-spin absolute right-4">
-          <LoaderIcon />
+          <LoadingIcon />
         </span>
       )}
       <span aria-live="polite" className="sr-only" role="status">
