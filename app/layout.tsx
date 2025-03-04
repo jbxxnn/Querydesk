@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 import "./globals.css";
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { Bell, Grid, LayoutGrid } from "lucide-react"
+import { Bell, Grid, LayoutGrid, Calendar } from "lucide-react"
 import Link from "next/link"
 import type React from "react"
 import { History } from "@/components/history";
@@ -66,7 +66,7 @@ export default async function RootLayout({
         <div className="flex h-screen bg-white">
         {/* Sidebar - only show for logged in users */}
         {session ? (
-          <div className="fixed top-0 left-0 w-64 h-full border-r bg-white z-10">
+          <div className="fixed top-0 left-0 w-64 h-full border-r bg-white z-20">
             <div className="flex flex-row gap-3 items-center p-4 border-b">
               <History />
               <h1 className="text-xl font-bold">Query Desk</h1>
@@ -89,6 +89,12 @@ export default async function RootLayout({
                 Documents
               </NavItem>
               )}
+              <NavItem
+                href="/calendar"
+                icon={<Calendar size={17} />}
+              >
+                Calendar
+              </NavItem>
               {session.user?.role === "admin" && (
               <NavItem
                 href="/settings"

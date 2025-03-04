@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.10",
+    "@heroicons/react": "^2.2.0",
     "@langchain/textsplitters": "^0.0.3",
     "@pinecone-database/pinecone": "^5.1.0",
     "@radix-ui/react-label": "^2.1.2",

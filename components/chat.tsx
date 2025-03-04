@@ -104,8 +104,14 @@ export function Chat({
               key={`${id}-${index}`}
               role={message.role}
               content={message.content}
+              toolInvocations={message.toolInvocations}
             />
           ))}
+
+          {/* {messages.map((message, i) => {
+            // if (message.role === "assistant" && (!message.content || message.content.trim() === "")) {
+              return null;
+            } */}
           
           {showSpinner && (
             <div className="flex items-start gap-4 max-w-[500px] w-full">

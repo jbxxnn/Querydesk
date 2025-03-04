@@ -8,9 +8,11 @@ import { Markdown } from "./markdown";
 export const Message = ({
   role,
   content,
+  toolInvocations,
 }: {
   role: string;
   content: string | ReactNode;
+  toolInvocations?: Array<{ toolName: string }>;
 }) => {
   return (
     <motion.div
@@ -24,7 +26,15 @@ export const Message = ({
 
       <div className="flex flex-col gap-6 w-full">
         <div className="text-zinc-800 dark:text-zinc-300 flex flex-col gap-4">
-          <Markdown>{content as string}</Markdown>
+          {typeof content === 'string' && content.length > 0 ? (
+            <Markdown>{content}</Markdown>
+          ) : toolInvocations && toolInvocations.length > 0 ? (
+            <span className="italic font-light">
+              Please wait...
+            </span>
+          ) : (
+            <Markdown>{content as string}</Markdown>
+          )}
         </div>
       </div>
     </motion.div>

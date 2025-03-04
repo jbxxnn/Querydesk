@@ -25,7 +25,7 @@ export default function Documents({
     const [selectedFilePathnames, setSelectedFilePathnames] = useState<
     Array<string>
   >([]);
-  const [isFilesVisible, setIsFilesVisible] = useState(false);
+  // const [isFilesVisible, setIsFilesVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [deleteQueue, setDeleteQueue] = useState<Array<string>>([]);
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
@@ -54,15 +54,15 @@ export default function Documents({
     }
   }, [selectedFilePathnames, isMounted, session]);
 
-  useEffect(() => {
-    console.log("Documents component rendered");
-    setIsMounted(true);
+  // useEffect(() => {
+  //   console.log("Documents component rendered");
+  //   setIsMounted(true);
     
-    // Check if user is admin, redirect if not
-    if (session && session.user && session.user.role !== 'admin') {
-      router.replace('/');
-    }
-  }, [session, router]);
+  //   // Check if user is admin, redirect if not
+  //   if (session && session.user && session.user.role !== 'admin') {
+  //     router.replace('/');
+  //   }
+  // }, [session, router]);
 
   useEffect(() => {
     if (session && session.user) {
@@ -77,9 +77,9 @@ export default function Documents({
   }, [session]);
 
   // Add back the conditional rendering to prevent content from showing to non-admins
-  if (!session || !session.user || session.user.role !== 'admin') {
-    return <div className="flex justify-center items-center h-screen">Nothing to see here 😋</div>;
-  }
+  // if (!session || !session.user || session.user.role !== 'admin') {
+  //   return <div className="flex justify-center items-center h-screen">Nothing to see here 😋</div>;
+  // }
     
   return (
     <div className="flex flex-col items-center min-h-screen w-full p-4 pt-[100px]">
