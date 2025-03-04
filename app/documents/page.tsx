@@ -12,20 +12,11 @@ import { fetcher } from "@/utils/functions";
 import cx from "classnames";
 import { useRouter } from "next/navigation";
 
-export default function Documents({
-    id,
-    initialMessages,
-    session,
-  }: {
-    id: string;
-    initialMessages: Array<Message>;
-    session: Session | null;
-  }) {
+export default function Documents() {
     const router = useRouter();
     const [selectedFilePathnames, setSelectedFilePathnames] = useState<
     Array<string>
   >([]);
-  // const [isFilesVisible, setIsFilesVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [deleteQueue, setDeleteQueue] = useState<Array<string>>([]);
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
@@ -46,40 +37,33 @@ export default function Documents({
   });
 
   useEffect(() => {
-    if (isMounted !== false && session && session.user) {
-      localStorage.setItem(
-        `${session.user.email}/selected-file-pathnames`,
-        JSON.stringify(selectedFilePathnames),
-      );
-    }
-  }, [selectedFilePathnames, isMounted, session]);
-
-  // useEffect(() => {
-  //   console.log("Documents component rendered");
-  //   setIsMounted(true);
-    
-  //   // Check if user is admin, redirect if not
-  //   if (session && session.user && session.user.role !== 'admin') {
-  //     router.replace('/');
-  //   }
-  // }, [session, router]);
+    const initializeSession = async () => {
+      const session = await auth();
+      if (isMounted !== false && session && session.user) {
+        localStorage.setItem(
+          `${session.user.email}/selected-file-pathnames`,
+          JSON.stringify(selectedFilePathnames),
+        );
+      }
+    };
+    initializeSession();
+  }, [selectedFilePathnames, isMounted]);
 
   useEffect(() => {
-    if (session && session.user) {
-      setSelectedFilePathnames(
-        JSON.parse(
-          localStorage.getItem(
-            `${session.user.email}/selected-file-pathnames`,
-          ) || "[]",
-        ),
-      );
-    }
-  }, [session]);
-
-  // Add back the conditional rendering to prevent content from showing to non-admins
-  // if (!session || !session.user || session.user.role !== 'admin') {
-  //   return <div className="flex justify-center items-center h-screen">Nothing to see here 😋</div>;
-  // }
+    const initializeSession = async () => {
+      const session = await auth();
+      if (session && session.user) {
+        setSelectedFilePathnames(
+          JSON.parse(
+            localStorage.getItem(
+              `${session.user.email}/selected-file-pathnames`,
+            ) || "[]",
+          ),
+        );
+      }
+    };
+    initializeSession();
+  }, []);
     
   return (
     <div className="flex flex-col items-center min-h-screen w-full p-4 pt-[100px]">
