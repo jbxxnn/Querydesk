@@ -11,17 +11,17 @@ import { useScrollToBottom } from "@/components/use-scroll-to-bottom";
 import { Session } from "next-auth";
 import { BotIcon, LoadingIcon } from "./icons";
 
-const suggestedActions = [
-  {
-    title: "What's the summary",
-    label: "of these documents?",
-    action: "what's the summary of these documents?",
-  },
-  {
-    title: "Who is the author",
-    label: "of these documents?",
-    action: "who is the author of these documents?",
-  },
+const suggestedActions = [{}
+  // {
+  //   title: "What's the summary",
+  //   label: "of these documents?",
+  //   action: "what's the summary of these documents?",
+  // },
+  // {
+  //   title: "Who is the author",
+  //   label: "of these documents?",
+  //   action: "who is the author of these documents?",
+  // },
 ];
 
 export function Chat({
@@ -145,7 +145,7 @@ export function Chat({
                 key={index}
                 className={index > 1 ? "hidden sm:block" : "block"}
               >
-                <button
+                {/* <button
                   onClick={async () => {
                     append({
                       role: "user",
@@ -158,7 +158,7 @@ export function Chat({
                   <span className="text-zinc-500 dark:text-zinc-400">
                     {suggestedAction.label}
                   </span>
-                </button>
+                </button> */}
               </motion.div>
             ))}
           </div>
