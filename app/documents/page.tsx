@@ -2,8 +2,6 @@
 
 import { Files } from "@/components/files";
 import { useState, useEffect, useRef } from "react";
-import { auth } from "@/app/(auth)/auth";
-import { Session } from "next-auth";
 import { Message } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
 import { FileIcon, LoadingIcon, TrashIcon, UploadIcon } from "@/components/icons";
@@ -38,7 +36,8 @@ export default function Documents() {
 
   useEffect(() => {
     const initializeSession = async () => {
-      const session = await auth();
+      const response = await fetch('/api/auth/session');
+      const session = await response.json();
       if (isMounted !== false && session && session.user) {
         localStorage.setItem(
           `${session.user.email}/selected-file-pathnames`,
@@ -51,7 +50,8 @@ export default function Documents() {
 
   useEffect(() => {
     const initializeSession = async () => {
-      const session = await auth();
+      const response = await fetch('/api/auth/session');
+      const session = await response.json();
       if (session && session.user) {
         setSelectedFilePathnames(
           JSON.parse(
