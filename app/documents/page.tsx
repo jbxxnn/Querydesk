@@ -201,7 +201,7 @@ export default function Documents() {
               {uploadQueue.map((fileName) => (
                 <tr key={fileName} className="bg-blue-50 dark:bg-blue-900/20">
                   <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
-                    {fileName} <span className="text-blue-500 ml-2">(Uploading...)</span>
+                    {fileName} <span className="text-blue-500 ml-2">(Uploading....)</span>
                   </td>
                   <td className="py-3 px-4 text-right">
                     <div className="animate-spin inline-block">
