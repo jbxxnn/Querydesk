@@ -56,120 +56,119 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   let session = await auth();
+  // const pathname = usePathname()
 
   return (
     <html lang="en">
       <body>
-        <div className="flex h-screen bg-white dark:bg-zinc-900">
-          {/* Sidebar - hide on mobile, show on desktop when logged in */}
-          {session ? (
-            <div className="hidden md:fixed md:top-0 md:left-0 md:w-64 md:h-full md:border-r md:bg-white md:dark:bg-zinc-900 md:z-20">
-              <div className="flex flex-row gap-3 items-center p-4 border-b">
-                <History />
-                <h1 className="text-xl font-bold">Query Desk</h1>
-              </div>
-              <nav className="space-y-1 px-2 pt-4">
-                <NavItem 
-                  href="/" 
-                  // icon={<LayoutGrid className="h-4 w-4" />}
-                  icon={<BotIcon />}
-                  // active={pathname === "/chat"}
-                >
-                  AI Assistant
-                </NavItem>
-                {session.user?.role === "admin" && (
-                <NavItem
-                  href="/documents"
-                  icon={<AttachmentIcon />}
-                  // active={pathname === "/documents"}
-                >
-                  Documents
-                </NavItem>
-                )}
-                <NavItem
-                  href="/calendar"
-                  icon={<Calendar size={17} />}
-                >
-                  Calendar
-                </NavItem>
-                {session.user?.role === "admin" && (
-                <NavItem
-                  href="/settings"
-                  icon={
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <path
-                        d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M9 5h6m-3 4v6m-3-3h6"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  }
-                  // active={pathname === "/settings"}
-                >
-                  Settings
-                </NavItem>
-                )}
-              </nav>
+        <div className="flex h-screen bg-white">
+        {/* Sidebar - only show for logged in users */}
+        {session ? (
+          <div className="fixed top-0 left-0 w-64 h-full border-r bg-white z-20">
+            <div className="flex flex-row gap-3 items-center p-4 border-b">
+              <History />
+              <h1 className="text-xl font-bold">Query Desk</h1>
             </div>
-          ) : null}
-
-          {/* Main content - adjust padding/margin based on screen size */}
-          <div className={`flex-1 ${session ? 'md:ml-64' : ''}`}>
-            {/* Header - full width on mobile, adjusted on desktop */}
-            <header className={`flex items-center justify-between fixed top-0 right-0 left-0 bg-white dark:bg-zinc-900 border-b px-4 py-3 z-10 ${session ? 'md:left-64' : ''}`}>
-              {/* Show menu/logo on mobile when logged in */}
-              {session ? (
-                <div className="flex md:hidden items-center gap-3">
-                  <History />
-                  <span className="text-lg font-semibold">Query Desk</span>
-                </div>
-              ) : (
-                <span className="text-lg font-semibold">Query Desk</span>
+            <nav className="space-y-1 px-2 pt-4">
+              <NavItem 
+                href="/" 
+                // icon={<LayoutGrid className="h-4 w-4" />}
+                icon={<BotIcon />}
+                // active={pathname === "/chat"}
+              >
+                AI Assistant
+              </NavItem>
+              {session.user?.role === "admin" && (
+              <NavItem
+                href="/documents"
+                icon={<AttachmentIcon />}
+                // active={pathname === "/documents"}
+              >
+                Documents
+              </NavItem>
               )}
-              
-              <div className="flex items-center gap-4">
-                {session ? (
-                  <div className="group relative">
-                    <div className="text-sm dark:text-zinc-400 px-3 py-1.5 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                      {session.user?.email}
-                    </div>
-                    <div className="absolute right-0 top-full mt-1 w-full pt-2 hidden group-hover:block">
-                      <form
-                        action={async () => {
-                          "use server";
-                          await signOut();
-                        }}
-                      >
-                        <button
-                          type="submit"
-                          className="w-full text-sm p-2 rounded-md bg-red-500 text-white hover:bg-red-600"
-                        >
-                          Sign out
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                ) : (
-                  <Link
-                    href="/login"
-                    className="text-sm px-3 py-1.5 bg-zinc-900 rounded-md text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  >
-                    Login
-                  </Link>
-                )}
-              </div>
-            </header>
+              <NavItem
+                href="/calendar"
+                icon={<Calendar size={17} />}
+              >
+                Calendar
+              </NavItem>
+              {session.user?.role === "admin" && (
+              <NavItem
+                href="/settings"
+                icon={
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path
+                      d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M9 5h6m-3 4v6m-3-3h6"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                }
+                // active={pathname === "/settings"}
+              >
+                Settings
+              </NavItem>
+              )}
+            </nav>
+          </div>
+        ) : null}
 
-            {/* Main content - add padding for header */}
-            <main className="pt-16"> {/* Adjust based on header height */}
-              <Toaster position="top-center" />
-              {/* <Navbar /> */}
-              {children}
-            </main>
+        {/* Main content - adjust margin based on whether sidebar is shown */}
+        <div className={`flex-1 ${session ? 'ml-64' : ''}`}>
+          {/* Header - adjust left position based on whether sidebar is shown */}
+          <header className={`flex items-center justify-end fixed top-0 right-0 ${session ? 'left-64' : 'left-0'} bg-white border-b px-6 py-4 z-10`}>
+            <div className="flex items-center gap-4">
+              {/* <Button variant="ghost" size="icon">
+                <Grid className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Bell className="h-4 w-4" />
+              </Button> */}
+
+        {session ? (
+        <div className="group py-1 px-2 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer relative">
+          <div className="text-sm dark:text-zinc-400 z-10">
+            {session.user?.email}
+          </div>
+          <div className="flex-col absolute top-6 right-0 w-full pt-5 group-hover:flex hidden">
+            <form
+              action={async () => {
+                "use server";
+                await signOut();
+              }}
+            >
+              <button
+                type="submit"
+                className="text-sm w-full p-1 rounded-md bg-red-500 text-red-50 hover:bg-red-600"
+              >
+                Sign out
+              </button>
+            </form>
           </div>
         </div>
+      ) : (
+        <Link
+          href="login"
+          className="text-sm p-1 px-2 bg-zinc-900 rounded-md text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900"
+        >
+          Login
+        </Link>
+      )}
+            </div>
+          </header>
+
+          {/* Main content - add top padding to accommodate fixed header */}
+            <main> {/* Adjust this value based on your header height */}
+          <Toaster position="top-center" />
+          {/* <Navbar /> */}
+          {children}
+          </main>
+        </div>
+      </div>
       </body>
     </html>
   );

@@ -93,11 +93,11 @@ export function Chat({
     useScrollToBottom<HTMLDivElement>();
 
   return (
-    <div className="flex flex-col justify-center pb-20 h-dvh bg-white dark:bg-zinc-900">
+    <div className="flex flex-row justify-center pb-20 h-dvh bg-white dark:bg-zinc-900">
       <div className="flex flex-col justify-between items-center gap-4 w-full max-w-[1200px]">
         <div
           ref={messagesContainerRef}
-          className="flex flex-col gap-4 h-full w-full items-center overflow-y-scroll px-4"
+          className="flex flex-col gap-4 h-full w-full items-center overflow-y-scroll px-4 md:px-0"
         >
           {messages.map((message, index) => (
             <PreviewMessage
@@ -108,6 +108,11 @@ export function Chat({
             />
           ))}
 
+          {/* {messages.map((message, i) => {
+            // if (message.role === "assistant" && (!message.content || message.content.trim() === "")) {
+              return null;
+            } */}
+          
           {showSpinner && (
             <div className="flex items-start gap-4 max-w-[500px] w-full">
               <div className="size-[24px] flex flex-col justify-center items-center flex-shrink-0 text-zinc-400">
@@ -131,7 +136,7 @@ export function Chat({
         </div>
 
         {messages.length === 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full px-4 mx-auto max-w-[500px]">
+          <div className="grid sm:grid-cols-2 gap-2 w-full px-4 md:px-0 mx-auto md:max-w-[500px]">
             {suggestedActions.map((suggestedAction, index) => (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -160,17 +165,34 @@ export function Chat({
         )}
 
         <form
-          className="fixed bottom-0 left-0 right-0 flex flex-row gap-2 items-center w-full bg-white dark:bg-zinc-900 p-4 border-t md:static md:border-0 md:max-w-[500px] md:p-0"
+          className="flex flex-row gap-2 relative items-center w-full md:max-w-[500px] max-w-[calc(100dvw-32px) px-4 md:px-0"
           onSubmit={handleSubmit}
         >
           <input
-            className="bg-zinc-100 dark:bg-zinc-800 rounded-lg px-4 py-2 flex-1 outline-none text-zinc-800 dark:text-zinc-300"
+            className="bg-zinc-100 rounded-md px-2 py-1.5 flex-1 outline-none dark:bg-zinc-700 text-zinc-800 dark:text-zinc-300"
             placeholder="Send a message..."
             value={input}
             onChange={(event) => {
               setInput(event.target.value);
             }}
           />
+
+          {/* <div
+            className="relative text-sm bg-zinc-100 rounded-lg size-9 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer hover:bg-zinc-200 dark:text-zinc-50 dark:bg-zinc-700 dark:hover:bg-zinc-800"
+            onClick={() => {
+              setIsFilesVisible(!isFilesVisible);
+            }}
+          > */}
+            {/* <FileIcon />
+            <motion.div
+              className="absolute text-xs -top-2 -right-2 bg-blue-500 size-5 rounded-full flex flex-row justify-center items-center border-2 dark:border-zinc-900 border-white text-blue-50"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              {selectedFilePathnames?.length}
+            </motion.div> */}
+          {/* </div> */}
         </form>
       </div>
 
